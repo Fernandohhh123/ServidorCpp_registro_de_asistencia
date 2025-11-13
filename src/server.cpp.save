@@ -1,0 +1,173 @@
+#include <cstdint>
+#include <iostream>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <iostream>
+#include <cstring>
+#include <cstdlib> // para exit, EXIT_FAILURE
+#include <string>  // para stoi
+#include <thread> //para poder aceptar varios usuarios a la vez
+#include <mysql_driver.h>
+#include <mysql_connection.h>
+#include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
+#include <iomanip>
+
+
+#include "server.hpp"
+
+Server::Server(int p):port(p){
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); //creacion de un soket tcp
+	sockaddr_in addr; memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET; //indcamos que usaremos ipv4
+	addr.sin_port = htons(port); //convierte el numero del puerto de red a orden de red
+	addr.sin_addr.s_addr = INADDR_ANY; //escuchar en todas las interfaccess disponibles
+
+	//asocia el socket con la direccion y el puerto  definidos
+	// listen() pon el socket en  modo servidor hasta 5 clientes antes de ser aceptados
+	bind(sockfd,(sockaddr*)&addr,sizeof(addr));
+	listen(sockfd,100);
+}
+
+void Server::run() {
+    std::cout << "Servidor corriendo en el puerto " << port << std::endl;
+    std::cout << "Ctl + C para cerrar el servidor" << std::endl;
+
+    while (true) {
+        int client = accept(sockfd, nullptr, nullptr); // Aceptar la conexión del cliente
+
+        if (client < 0) {
+            std::cerr << "Error al aceptar la conexión." << std::endl;
+            continue;
+        }
+
+        std::cout << "***********************************" << std::endl;
+        //std::cout << "- Cliente conectado -" << std::endl;
+
+        // Crear un nuevo hilo para manejar al cliente
+        std::thread t(&Server::handle_client_thread, this, client);
+        t.detach(); // Hacer que el hilo se ejecute independientemente
+    }
+
+    close(sockfd);
+}
+
+
+
+
+
+void Server::handle_client_thread(int client_fd) {
+    char buffer[2048];
+    ClientData c_data;
+    bool nombre_recibido = false; // 🔹 Saber si ya recibimos el nombre_pc
+
+    while (true) {  // Mantener la conexión abierta
+        memset(buffer, 0, sizeof(buffer));
+        int bytes_read = read(client_fd, buffer, sizeof(buffer));
+
+        if (bytes_read <= 0) {
+
+            std::cout << "======================================================" << std::endl;
+
+            // 🔹 Si el cliente se desconecta o hay error
+            if (nombre_recibido) {
+                std::cout << "- " << c_data.nombre_pc << " se ha desconectado -" << std::endl;
+            } else {
+                std::cout << "*** Un cliente se ha desconectado antes de enviar datos ***" << std::endl;
+            }
+
+            std::cout << "======================================================" << std::endl;
+
+            break;
+        }
+
+        std::string received_data(buffer, bytes_read);
+
+        // Parseo de los datos
+        size_t pos = 0;
+        int field_index = 0;
+        std::string token;
+        std::string delimiter = ";";
+
+        while ((pos = received_data.find(delimiter)) != std::string::npos && field_index < 5) {
+            token = received_data.substr(0, pos);
+            switch (field_index) {
+                case 0: c_data.nombre = token; break;
+                case 1: c_data.matricula = token; break;
+                case 2: c_data.carrera = token; break;
+                case 3: c_data.docente = token; break;
+                case 4: c_data.motivo = token; break;
+            }
+            received_data.erase(0, pos + delimiter.length());
+            field_index++;
+        }
+
+        c_data.nombre_pc = received_data;
+        nombre_recibido = true; //Ya tenemos el nombre del cliente
+
+        // Mostrar quién envió los datos
+        std::cout << "-> " << c_data.nombre_pc << " envió datos" << std::endl;
+
+        c_data.hora = obtener_hora_actual();
+
+        guardar_en_bd(c_data);
+
+        std::string msg_usr = "- DATOS ENVIADOS -\n";
+        write(client_fd, msg_usr.c_str(), msg_usr.size());
+
+        std::cout << c_data.hora << std::endl;
+        std::cout << "Nombre: " << c_data.nombre << std::endl;
+        //std::cout << "Matricula: " << c_data.matricula << std::endl;
+        //std::cout << "Carrera: " << c_data.carrera << std::endl;
+        //std::cout << "Docente: " << c_data.docente << std::endl;
+        std::cout << "Motivo: " << c_data.motivo << std::endl;
+        std::cout << "Nombre de la pc: " << c_data.nombre_pc << std::endl;
+        std::cout << "-----------------------------------" << std::endl << std::endl;
+    }
+
+    // 🔹 Cerrar conexión solo cuando el cliente se haya desconectado
+    close(client_fd);
+}
+
+
+
+
+
+
+
+void guardar_en_bd(const ClientData& c_data) {
+    try {
+        sql::mysql::MySQL_Driver* driver = sql::mysql::get_mysql_driver_instance();
+        std::unique_ptr<sql::Connection> conn(driver->connect("tcp://127.0.0.1:3306", "root", "root"));
+        conn->setSchema("registro_de_asistencia");
+
+        std::unique_ptr<sql::PreparedStatement> pstmt(
+            conn->prepareStatement("INSERT INTO usuarios(nombre, matricula, carrera, docente, motivo, nombre_pc, hora) VALUES (?, ?, ?, ?, ?, ?, ?)")
+        );
+
+        pstmt->setString(1, c_data.nombre);
+        pstmt->setString(2, c_data.matricula);
+        pstmt->setString(3, c_data.carrera);
+        pstmt->setString(4, c_data.docente);
+        pstmt->setString(5, c_data.motivo);       
+        pstmt->setString(6, c_data.nombre_pc);
+        pstmt->setString(7, c_data.hora);
+
+        pstmt->execute();
+
+        std::cout << "Datos guardados en la base de datos." << std::endl;
+    } catch (sql::SQLException& e) {
+        std::cerr << "Error al guardar en la base de datos: " << e.what() << std::endl;
+    }
+}
+
+
+
+std::string Server::obtener_hora_actual() const {
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%H:%M:%S");
+    return oss.str();
+}
+
