@@ -1,20 +1,36 @@
 #include <iostream>
 #include "server.hpp"
+#include "../include/cli_arg.hpp"
+#include "../include/version.hpp"
 
-int main(){
+//numero que indica puerto no definido
+#define UNDEF_PORT 0
 
-    // escrito por fernando herandez valverde
-    std::cout << "SERVIDOR CERRU" << std::endl;
-    
-    std::string app_ver = "0.2";
-    std::cout << "app Version: " << app_ver << std::endl;
+//codigo que indica el estado en el que termino el programa (normal = 0)
+#define NORMAL_EXIT 0
 
-    std::cout << "Ingresa el puerto: ";
-    int puerto = 0;
-    std::cin >> puerto;
 
-    Server servidor(puerto);
-    servidor.run();
+int main(int argc, char *argv[]){
 
-    return 0;
+	int16_t status_code = NORMAL_EXIT;
+
+	// escrito por Fernando Herandez Valverde
+
+	Cli_args config = argument_parser(argc, argv);
+
+	std::cout << "SERVIDOR CERRU" << std::endl;
+
+	config.app_version = get_app_version();
+
+	if(config.puerto <= UNDEF_PORT){
+        std::cout << "Ingresa el puerto: ";
+        std::cin >> config.puerto;
+
+	}
+
+
+	Server servidor(config.puerto);
+	servidor.run();
+
+	return status_code;
 }

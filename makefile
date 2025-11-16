@@ -8,8 +8,8 @@ LDFLAGS := -lmysqlcppconn -lpthread
 
 # Source and object files
 SRC := $(wildcard src/*.cpp)
-OBJ := $(SRC:src/%.cpp=%.o)
-TARGET := servidor
+OBJ := $(SRC:src/%.cpp=obj/%.o)
+TARGET := bin/cerrusv
 
 # Default target
 all: $(TARGET)
@@ -19,7 +19,7 @@ $(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Compilation rule
-%.o: src/%.cpp
+obj/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Clean
