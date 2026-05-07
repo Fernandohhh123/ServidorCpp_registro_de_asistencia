@@ -1,0 +1,16 @@
+Servidor para un registro de asistencia
+
+paquete usado para conectar el servidor con mysql
+-> libmysqlcppconn-dev
+
+debian / ubuntu
+sudo apt install libmysqlcppconn-dev
+
+modo de uso:
+	cerrusv <args>
+		-p <puerto> | --port <puerto>	Se inicia el servidor con el puerto
+						asignado, ignorando el archivo de configuracion
+
+		-v | --version			Se muestra informacion del sofrtware
+
+		-h | --help			Muestra un menu de ayuda
