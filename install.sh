@@ -8,7 +8,11 @@ if [ ! -f "$BIN" ]; then
     exit 1
 fi
 
-sudo cp "$BIN" /usr/local/bin/
-sudo chmod +x /usr/local/bin/cerrusv
+echo "Instalando ejecutable"
+cp "$BIN" /usr/local/bin/
+chmod +x /usr/local/bin/cerrusv
+
+echo "Copiando archivo de configuracion"
+cp cerrusv.cfg /etc/
 
 echo "Instalado en /usr/local/bin/cerrusv"

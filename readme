@@ -19,7 +19,7 @@ Como instalar:
 	- Una vez instalado puede borrar esta carpeta
 
 El programa para funcionar necesita 2 archivos:
-- /bin/cerrusv
+- /usr/local/bin/cerrusv
 	El binario ejecutable del programa
 
 - /etc/cerrusv.conf
