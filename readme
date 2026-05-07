@@ -6,6 +6,25 @@ paquete usado para conectar el servidor con mysql
 debian / ubuntu
 sudo apt install libmysqlcppconn-dev
 
+Para compilar el software solo ejecuta el comando:
+	make
+
+Como instalar:
+	- Dele permiso de ejecucion al archivo "install.sh"
+	chmod +x install.sh
+	
+	- Ejecute el script de instalacion:
+	sudo ./install.sh
+
+	- Una vez instalado puede borrar esta carpeta
+
+El programa para funcionar necesita 2 archivos:
+- /bin/cerrusv
+	El binario ejecutable del programa
+
+- /etc/cerrusv.conf
+	Es el archivo de configuracion para el programa
+
 modo de uso:
 	cerrusv <args>
 		-p <puerto> | --port <puerto>	Se inicia el servidor con el puerto
