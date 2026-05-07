@@ -40,10 +40,9 @@ Cli_args argument_parser(int argc, char **argv){
 			std::cout << "servidor -h\nservidor --help" << std::endl;
 			std::cout << "Para obtener ayuda." << std::endl;
 
-			exit(NORMAL_EXIT);
+			exit(1);
 		}
 	}
 
 	return cliargs;
-
 }
