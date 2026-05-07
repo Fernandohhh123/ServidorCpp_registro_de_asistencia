@@ -16,10 +16,12 @@ all: $(TARGET)
 
 # Linking rule
 $(TARGET): $(OBJ)
+	mkdir -p bin
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Compilation rule
 obj/%.o: src/%.cpp
+	mkdir -p obj
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Clean
