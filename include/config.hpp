@@ -1,5 +1,6 @@
 #pragma once
 
-#include <fstream.h>
+#include "cli_arg.hpp"
 
-File get_config_file();
+void get_config(Cli_args*, const char*);
+char* limpiar_espacios(char*);

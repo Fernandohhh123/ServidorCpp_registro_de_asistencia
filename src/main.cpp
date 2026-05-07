@@ -2,6 +2,7 @@
 #include "server.hpp"
 #include "../include/cli_arg.hpp"
 #include "../include/version.hpp"
+#include "../include/config.hpp"
 
 //numero que indica puerto no definido
 #define UNDEF_PORT 0
@@ -22,10 +23,12 @@ int main(int argc, char *argv[]){
 
 	config.app_version = get_app_version();
 
-	if(config.puerto <= UNDEF_PORT){
-        std::cout << "Ingresa el puerto: ";
-        std::cin >> config.puerto;
+	//obtenemos la configuracion del archivo.cfg
+	get_config(&config, "/etc/cerrusv.cfg");
 
+	if(config.puerto <= UNDEF_PORT){
+        	std::cout << "Ingresa el puerto: ";
+	        std::cin >> config.puerto;
 	}
 
 
