@@ -18,6 +18,17 @@ Como instalar:
 
 	- Una vez instalado puede borrar esta carpeta
 
+Como desinstalar:
+    - Al igual que el script de instalacion,
+      dele permisos al script y este verificara si los
+      archivos existen y los borrara
+
+    - sudo ./uninstall.sh
+
+#EL SCRIPT DE DESINSTALACION SE QUEDA EN LA CARPETA#
+#LOCAL DEL PROYECTO, POR LO QUE SI BORRA LA CARPETA#
+#PERDERA EL SCRIPT DE DESINSTALACION#
+
 El programa para funcionar necesita 2 archivos:
 - /usr/local/bin/cerrusv
 	El binario ejecutable del programa
@@ -27,9 +38,7 @@ El programa para funcionar necesita 2 archivos:
 
 modo de uso:
 	cerrusv <args>
-		-p <puerto> | --port <puerto>	Se inicia el servidor con el puerto
-						asignado, ignorando el archivo de configuracion
 
-		-v | --version			Se muestra informacion del sofrtware
+        -v			Se muestra informacion del sofrtware
 
-		-h | --help			Muestra un menu de ayuda
+        -h			Muestra un menu de ayuda
