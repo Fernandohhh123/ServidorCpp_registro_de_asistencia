@@ -14,16 +14,17 @@ Cli_args argument_parser(int argc, char **argv){
 	for(int i = 1; i < argc; i++){
 		std::string argument = argv[i];
 
-		if((argument == "-p" || argument == "--port") && i+1 < argc){
+		if(argument == "-h"){
 
-			cliargs.puerto = std::stoi(argv[++i]);
+            std::cout << "Este servidor se gestiona mediante el archivo de configuracion." << std::endl;
+            std::cout << "El archivo de configuracion se encuentra en /etc/cerrusv.json" << std::endl;
 
+            exit(0);
 
 		}else if(argument == "-v"){
 
 			std::cout << "SERVER CERRU version " << get_app_version() << std::endl;
 			exit(NORMAL_EXIT);
-
 
 		}else if(argument == "--version"){
 
@@ -33,7 +34,6 @@ Cli_args argument_parser(int argc, char **argv){
 
 			exit(NORMAL_EXIT);
 		}
-
 
 		else{
 			std::cout << "Unknow option: " << argument << std::endl;

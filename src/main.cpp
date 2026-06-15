@@ -10,6 +10,7 @@
 //codigo que indica el estado en el que termino el programa (normal = 0)
 #define NORMAL_EXIT 0
 
+#define DEFAULT_PORT 12345
 
 int main(int argc, char *argv[]){
 
@@ -27,8 +28,8 @@ int main(int argc, char *argv[]){
 	get_config(&config, "/etc/cerrusv.cfg");
 
 	if(config.puerto <= UNDEF_PORT){
-        	std::cout << "Ingresa el puerto: ";
-	        std::cin >> config.puerto;
+        	std::cout << "PUERTO NO ESPECIFICADO." << std::endl;
+	        config.puerto = DEFAULT_PORT;
 	}
 
 
