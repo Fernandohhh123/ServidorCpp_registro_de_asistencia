@@ -6,15 +6,35 @@ paquete usado para conectar el servidor con mysql
 debian / ubuntu
 sudo apt install libmysqlcppconn-dev
 
-Para compilar el software solo ejecuta el comando:
-	make
 
+### Como compilar ###
+Para compilar el software se necesitan los siguientes paquetes
+- build-essential
+- libmysqlcppconn-dev
+- libmysqlclient-dev
+- libssl-dev
+
+debian / ubuntu
+
+# apt install build-essential libmysqlcppconn-dev libmysqlclient-dev libssl-dev
+
+El software tiene dos formas de compilacion:
+compilacion sinamica y estatica (por defecto).
+Para compilar de forma dinamica solo ejecute make sobre
+la carpeta principal del proyecto:
+	$ make
+
+Para compilar de forma estatica debe de agregar el argumento
+"static" a make:
+    $ make static
+
+### Como instalar ###
 Como instalar:
 	- Dele permiso de ejecucion al archivo "install.sh"
 	chmod +x install.sh
 	
 	- Ejecute el script de instalacion:
-	sudo ./install.sh
+	# ./install.sh
 
 	- Una vez instalado puede borrar esta carpeta
 
@@ -23,7 +43,7 @@ Como desinstalar:
       dele permisos al script y este verificara si los
       archivos existen y los borrara
 
-    - sudo ./uninstall.sh
+    # ./uninstall.sh
 
 #EL SCRIPT DE DESINSTALACION SE QUEDA EN LA CARPETA#
 #LOCAL DEL PROYECTO, POR LO QUE SI BORRA LA CARPETA#
