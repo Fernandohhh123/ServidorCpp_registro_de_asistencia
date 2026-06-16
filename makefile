@@ -1,9 +1,10 @@
+# Compiler
 CXX := g++
 
-# Compilation flags
-CXXFLAGS := -std=c++17 -Wall -Iinclude
+# Dynamic compilation flags
+CXXFLAGS := -std=c++17 -Wall -Wextra
 
-# Linker flags (IMPORTANT: put libraries here)
+# Dynaimc linker flags (IMPORTANT: put libraries here)
 LDFLAGS := -lmysqlcppconn -lpthread
 
 # Source and object files
@@ -13,6 +14,13 @@ TARGET := bin/cerrusv
 
 # Default target
 all: $(TARGET)
+
+# En caso de querer compilar estatico
+static: CXXFLAGS := -std=c++17 -Wall -Wextra -DSTATIC_CONCPP
+static: LDFLAGS := /usr/lib/x86_64-linux-gnu/libmysqlcppconn-static.a \
+					-lmysqlclient \
+					-lssl -lcrypto -lpthread -ldl
+static: $(TARGET)
 
 # Linking rule
 $(TARGET): $(OBJ)
@@ -24,7 +32,9 @@ obj/%.o: src/%.cpp
 	mkdir -p obj
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+
+.PHONY: clean static
+
 # Clean
 clean:
 	rm -f $(OBJ) $(TARGET)
-
