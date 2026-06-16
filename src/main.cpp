@@ -1,5 +1,5 @@
 #include <iostream>
-#include "server.hpp"
+#include "../include/server.hpp"
 #include "../include/cli_arg.hpp"
 #include "../include/version.hpp"
 #include "../include/config.hpp"

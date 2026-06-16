@@ -12,7 +12,8 @@
 #include <cppconn/prepared_statement.h>
 #include <iomanip>
 #include <netinet/tcp.h>  // Para configurar keepalive
-#include "server.hpp"
+
+#include "../include/server.hpp"
 
 Server::Server(int p) : port(p) {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
