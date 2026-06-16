@@ -19,7 +19,7 @@ debian / ubuntu
 # apt install build-essential libmysqlcppconn-dev libmysqlclient-dev libssl-dev
 
 El software tiene dos formas de compilacion:
-compilacion sinamica y estatica (por defecto).
+compilacion dinamica y estatica (por defecto).
 Para compilar de forma dinamica solo ejecute make sobre
 la carpeta principal del proyecto:
 	$ make
