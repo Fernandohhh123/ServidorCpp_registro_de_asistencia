@@ -3,9 +3,12 @@
 DIR="$(dirname "$0")"
 BIN="$DIR/bin/cerrusv"
 CFG_FILE="cerrusv.cfg"
+PATH_CFG_FILE="/etc/cerrusv.cfg"
+
+echo "### Instalando... ###"
 
 if [ ! -f "$BIN" ]; then
-    echo "No se encontró el ejecutable en: $BIN"
+    echo "[ x ] No se encontro el ejecutable en: $BIN"
     exit 1
 fi
 
@@ -13,13 +16,18 @@ echo "Instalando ejecutable"
 cp "$BIN" /usr/local/bin/
 chmod +x /usr/local/bin/cerrusv
 
+
+
 if [ ! -f "$CFG_FILE" ]; then
-    echo "No existe el archvo de configuracion"
-else
+    echo "[ x ] No existe el archvo de configuracion"
+
+elif [ ! -f "$PATH_CFG_FILE" ]; then
     echo "Copiando archivo de configuracion"
-    cp cerrusv.cfg /etc/
+    cp cerrusv.cfg "$PATH_CFG_FILE"
+else
+    echo "Archivo de configuracion existente en: $PATH_CFG_FILE"
 fi
 
+echo "Binario instalado en /usr/local/bin/cerrusv"
 
-
-echo "Instalado en /usr/local/bin/cerrusv"
+echo "Listo!"
