@@ -1,8 +1,17 @@
-#Para desactivar opciones de configuracion solo comente la linea con "#"
-#Para activar opciones solo borre la almohadilla de la linea "#"
+[server]
+port =
+max_connections =
 
-#De momento no tiene utilidad la ip
-# IP_SERVER = 192.168.0.0
+[database]
+host = " "
+user = " "
+password = " "
 
-#Puerto en el que va a funcionar el servidor
-PORT_SERVER = 0
+# Protocolo para recibir datos del formulario
+[protocol]
+delimiter = ";"
+format = "PlainText"
+
+[[database.tables]]
+name = " "
+fields = ["id", "nombre", "matricula"]
