@@ -27,6 +27,8 @@ int main(int argc, char *argv[]){
     // obtenemos la configuracion del archivo de configuracion
     config::Config_server config = config::get_config();
 
+    std::cout << config.port << std::endl;
+
 	// servidor.run();
 
 	return status_code;

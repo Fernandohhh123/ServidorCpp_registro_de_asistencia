@@ -8,13 +8,24 @@
 
 namespace config{
     Config_server get_config(void){
-        std::ifstream archivo("/etc/cerrucfg.toml");
 
         Config_server config;
 
-        if(!archivo.is_open()){
-            std::cerr << "[ x ] Archivo de configuracion no encontrado." << std::endl;
+        toml::table config_buffer;
+
+        try{
+            config_buffer = toml::parse_file(CONFIG_PATH);
         }
+        catch (const toml::parse_error& e){
+            std::cerr << "[ x ] Error en el archivo de configuracion: "
+                      << e.description() << std::endl
+                      << "Linea: " << e.source().begin.line << std::endl
+                      << "Columna: " << e.source().begin.column << std::endl;
+
+            return config;
+        }
+
+        config.port = config_buffer["server"]["port"].value_or(config.port);
 
         return config;
     }

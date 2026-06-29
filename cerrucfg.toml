@@ -1,17 +1,17 @@
 [server]
-port =
-max_connections =
+port= 0
+max_connections = 0
 
 [database]
 host = " "
 user = " "
 password = " "
 
-# Protocolo para recibir datos del formulario
+# Proocolo que indica como se van a mandar los datos
 [protocol]
 delimiter = ";"
 format = "PlainText"
 
 [[database.tables]]
-name = " "
+name = "Nombre_de_tabla"
 fields = ["id", "nombre", "matricula"]
