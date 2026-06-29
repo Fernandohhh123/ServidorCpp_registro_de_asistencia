@@ -12,11 +12,15 @@ namespace config {
     struct Config_server {
         int64_t port = 0;
         int32_t MaxConnections = 0;
+
+        std::string db_host = " ";
         std::string db_UserName = " ";
         std::string db_Passwd = " ";
+        std::string db_name = " ";
         std::string db_TableName = " ";
         std::vector<std::string> TableFields = {};
-        std::string delimiter = " ";
+
+        std::string delimiter = "";
     };
 
     struct Config_server_default {
