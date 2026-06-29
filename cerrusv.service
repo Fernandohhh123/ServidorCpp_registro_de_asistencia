@@ -1,0 +1,14 @@
+[Unit]
+Description=Servidor C++ de Registro de Asistencia (Cerru)
+After=network.target mysql.service
+
+[Service]
+Type=simple
+# Ejecuta el binario pasándole la ruta de la configuración que parseamos
+ExecStart=/bin/cerrusv /etc/cerrucfg.toml
+Restart=on-failure
+RestartSec=2
+User=root
+
+[Install]
+WantedBy=multi-user.target
