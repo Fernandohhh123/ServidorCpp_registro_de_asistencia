@@ -1,17 +1,23 @@
 [server]
+
+# Puerto del servidor
 port= 0
+
+# Maximo de usuarios simultaneos
 max_connections = 0
 
 [database]
-host = " "
-user = " "
-password = " "
+
+# IP de la base de datos
+host = ""
+
+user = ""
+password = ""
+db_name = ""
+table_name = "Nombre_de_tabla"
+table_fields = ["nombre", "matricula"]
 
 # Proocolo que indica como se van a mandar los datos
 [protocol]
 delimiter = ";"
 format = "PlainText"
-
-[[database.tables]]
-name = "Nombre_de_tabla"
-fields = ["id", "nombre", "matricula"]
