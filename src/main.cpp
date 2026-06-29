@@ -18,23 +18,16 @@ int main(int argc, char *argv[]){
 
 	// escrito por Fernando Herandez Valverde
 
-	Cli_args config = argument_parser(argc, argv);
+	Cli_args argumets = argument_parser(argc, argv);
 
-	std::cout << "SERVIDOR CERRU" << std::endl;
+    std::cout << "+----------------+" << std::endl;
+	std::cout << "| SERVIDOR CERRU |" << std::endl;
+    std::cout << "+----------------+" << std::endl;
 
-	config.app_version = get_app_version();
+    // obtenemos la configuracion del archivo de configuracion
+    config::Config_server config = config::get_config();
 
-	//obtenemos la configuracion del archivo.cfg
-	get_config(&config, "/etc/cerrusv.cfg");
-
-	if(config.puerto <= UNDEF_PORT){
-        	std::cout << "PUERTO NO ESPECIFICADO." << std::endl;
-	        config.puerto = DEFAULT_PORT;
-	}
-
-
-	Server servidor(config.puerto);
-	servidor.run();
+	// servidor.run();
 
 	return status_code;
 }
