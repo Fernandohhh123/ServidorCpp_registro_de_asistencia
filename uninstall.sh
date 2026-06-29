@@ -10,10 +10,10 @@ else
     rm /usr/local/bin/cerrusv
 fi
 
-if [ ! -f "/etc/cerrusv.cfg" ]; then
-    echo "No existe el archivo de configuracion /etc/cerrusv.cfg"
+if [ ! -f "/etc/cerrucfg.toml" ]; then
+    echo "No existe el archivo de configuracion /etc/cerrucfg.toml"
 else
-    rm /etc/cerrusv.cfg
+    rm /etc/cerrucfg.toml
 fi
 
 echo "Programa desinstalado correctamente"
