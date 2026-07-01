@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 
 	// escrito por Fernando Herandez Valverde
 
-	Cli_args argumets = argument_parser(argc, argv);
+	Cli_args arguments = argument_parser(argc, argv);
 
     std::cout << "+----------------+" << std::endl;
 	std::cout << "| SERVIDOR CERRU |" << std::endl;
@@ -27,7 +27,22 @@ int main(int argc, char *argv[]){
     // obtenemos la configuracion del archivo de configuracion
     config::Config_server config = config::get_config();
 
-    std::cout << config.port << std::endl;
+    if(!config::validate_configuration(&config)){
+        std::cout << "[ x ] Configuracion invalida" << std::endl;
+        std::cout << "Cargando la configuracion por defecto" << std::endl;
+        load_default_config(&config);
+    }
+
+    if (arguments.verbose != 0){
+        std::cout << "# Configuracion del servidor #" << std::endl;
+        std::cout << "Puerto: " << config.port << std::endl;
+        std::cout << "Maximas conecciones: " << config.MaxConnections << std::endl;
+        std::cout << "IP Data Base: " << config.db_host << std::endl;
+        std::cout << "Nombre de la base de datos: " << config.db_name << std::endl;
+        std::cout << "Tabla: " << config.db_TableName << std::endl;
+
+        std::cout << "Delimitador: " << config.delimiter << std::endl;
+    }
 
 	// servidor.run();
 

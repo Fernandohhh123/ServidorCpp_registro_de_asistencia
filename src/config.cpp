@@ -44,10 +44,38 @@ namespace config{
                 if(!nombre_campo.empty()){
                     config.TableFields.push_back(nombre_campo);
                 }
-            }
-        }
+            } // for
+        } // if
+
+        config.delimiter = config_buffer["protocol"]["delimiter"].value_or(config.delimiter);
 
         return config;
+    } // get_config()
+
+    bool validate_configuration(Config_server *config){
+        if(config -> port <= 0) return false;
+
+        if(config -> MaxConnections <= 0) return false;
+
+        if(config -> db_host == "") return false;
+
+        if(config -> db_UserName == "") return false;
+
+        if(config -> db_Passwd == "") return false;
+
+        if(config -> db_name == "") return false;
+
+        if(config -> db_TableName == "") return false;
+
+        if(config -> delimiter == "") return false;
+
+        return true;
     }
 
-}
+    void load_default_config(Config_server *config){
+        config -> port = 12345;
+        config -> MaxConnections = 100;
+        config -> db_host = "127.0.0.1";
+    }
+
+} // namespace

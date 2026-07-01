@@ -47,6 +47,9 @@ Cli_args argument_parser(int argc, char **argv){
 		} else if(argument == "--gen-config-file"){
             std::cout << "Deberia generarse el archivo de configuracion." << std::endl;
             exit(NORMAL_EXIT);
+        }  else if(argument == "--verbose"){
+            std::cout << "[ ok ] Se mostrara informacion detallada de la configuracion." << std::endl;
+            cliargs.verbose = 1;
         }
 
 		else{

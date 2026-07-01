@@ -13,25 +13,17 @@ namespace config {
         int64_t port = 0;
         int32_t MaxConnections = 0;
 
-        std::string db_host = " ";
-        std::string db_UserName = " ";
-        std::string db_Passwd = " ";
-        std::string db_name = " ";
-        std::string db_TableName = " ";
+        std::string db_host = "";
+        std::string db_UserName = "";
+        std::string db_Passwd = "";
+        std::string db_name = "";
+        std::string db_TableName = "";
         std::vector<std::string> TableFields = {};
 
-        std::string delimiter = "";
-    };
-
-    struct Config_server_default {
-        int64_t port = 12345;
-        int32_t MaxConnections = 100;
-        std::string db_UserName = "root";
-        std::string db_Passwd = "12345";
-        std::string db_TableName = "usuarios";
-        std::vector<std::string> TableFields = {"nombre", "matricula"};
         std::string delimiter = ";";
     };
 
     Config_server get_config(void);
+    bool validate_configuration(Config_server*);
+    void load_default_config(Config_server*);
 }
