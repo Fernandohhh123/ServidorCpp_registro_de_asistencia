@@ -1,19 +1,29 @@
-#ifndef SERVER_HPP
-#define SERVER_HPP
+#pragma once
 
 #include <netinet/in.h>
 #include <string>
 #include <thread>
+#include <mutex>
+#include <atomic>
+
 #include "buffer_client.hpp"
+#include "config.hpp"
 
 // Clase principal del servidor
 class Server {
+
+private:
     int sockfd;  // Descriptor del socket principal
-    int port;    // Puerto del servidor
+    config::Config_server config;
+    std::mutex bd_mutex; // proteccion para inserciones simultaneas en la db
+    std::atomic<int> conexiones_actuales {0}; // Contator para proteger el maximo
+                                              // de conexiones
 
 public:
-    explicit Server(int p);  // Constructor con puerto
+    explicit Server(const config::Config_server& cfg);  // Constructor con configuracion
     void run();              // Inicia el servidor (acepta clientes)
+
+    ~Server() = default;
 
 private:
     // Manejo por cliente (un hilo por conexión)
@@ -21,9 +31,7 @@ private:
 
     // Devuelve hora actual formateada HH:MM:SS
     std::string obtener_hora_actual() const;
+
+    // funcion para guardar los datos en la base
+    void guardar_en_bd(const ClientData&);
 };
-
-// Función global para guardar datos del cliente en la base de datos
-void guardar_en_bd(const ClientData&);
-
-#endif

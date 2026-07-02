@@ -44,7 +44,9 @@ int main(int argc, char *argv[]){
         std::cout << "Delimitador: " << config.delimiter << std::endl;
     }
 
-	// servidor.run();
+    Server servidor(config);
+
+	servidor.run();
 
 	return status_code;
 }

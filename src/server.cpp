@@ -15,7 +15,7 @@
 
 #include "../include/server.hpp"
 
-Server::Server(int p) : port(p) {
+Server::Server(const config::Config_server& cfg) : sockfd(-1), config(cfg) {
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
         perror("Error al crear el socket");
@@ -29,7 +29,7 @@ Server::Server(int p) : port(p) {
         exit(EXIT_FAILURE);
     }
 
-    // 🔹 Activar TCP Keepalive
+    // Activar TCP Keepalive
     int keepalive = 1;
     int idle = 10;      // segundos de inactividad antes de enviar probe
     int interval = 5;   // segundos entre probes
@@ -42,7 +42,7 @@ Server::Server(int p) : port(p) {
 
     sockaddr_in addr{};
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
+    addr.sin_port = htons(config.port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(sockfd, (sockaddr*)&addr, sizeof(addr)) < 0) {
@@ -57,26 +57,69 @@ Server::Server(int p) : port(p) {
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "Servidor iniciado en el puerto " << port << std::endl;
+    std::cout << "Servidor iniciado en el puerto " << config.port << std::endl;
     std::cout << "CTL + C para cerrar el servidor." << std::endl;
 }
 
 
 void Server::run() {
+
+// ************************
+    std::thread([this]() {
+        std::cout << "[ TEST ] El socket morirá en 5 segundos..." << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "[ TEST ] Cerrando socket principal a la fuerza..." << std::endl;
+
+        // Al cerrar el sockfd desde aquí, accept() se despierta inmediatamente con EBADF
+        close(this->sockfd);
+    }).detach();
+// *************************
+
     while (true) {
+
+        if(conexiones_actuales > config.MaxConnections){
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            continue;
+        }
+
         sockaddr_in client_addr;
         socklen_t client_len = sizeof(client_addr);
+
         int client_fd = accept(sockfd, (sockaddr*)&client_addr, &client_len);
 
         if (client_fd < 0) {
-            perror("Error en accept");
+
+            int error_guardado = errno;
+
+            if(errno == EBADF || errno == EINVAL){
+                std::cerr << "\n\n";
+                std::cerr << "======================= FALLO CRITICO ====================" << std::endl;
+                std::cerr << "[ x ] Socket principal cerrado" << std::endl;
+                std::cerr << "[ " << obtener_hora_actual()
+                          << " ] Fallo critico en el socket principal" << std::endl;
+                std::cerr << "[ ! ] Codigo de error: " << error_guardado << std::endl;
+                std::cerr << "Descripcion: " << strerror(error_guardado) << std::endl;
+                std::cerr << "[ ! ] Deteniendo el servidor" << std::endl;
+                std::cerr << "==========================================================" << std::endl;
+                exit(1);
+                break;
+            }
+
+            perror("[ x ] Error en accept");
             continue;
         }
 
         std::cout << "Cliente conectado ip: " << inet_ntoa(client_addr.sin_addr) << std::endl;
 
+        ++ conexiones_actuales;
+
         // Crear un hilo por cliente
-        std::thread(&Server::handle_client_thread, this, client_fd).detach();
+        std::thread(
+            [this, client_fd]() {
+                this -> handle_client_thread(client_fd);
+                -- conexiones_actuales;
+            }
+        ).detach();
     }
 }
 
@@ -110,14 +153,14 @@ void Server::handle_client_thread(int client_fd) {
             int bytes_read = read(client_fd, buffer, sizeof(buffer));
 
             if (bytes_read <= 0) {
-                std::cout << "======================================================" << std::endl;
+                std::cerr << "======================================================" << std::endl;
 
                 if (nombre_recibido)
-                    std::cout << "- " << c_data.nombre_pc << " se ha desconectado -" << std::endl;
+                    std::cerr << "- " << c_data.nombre_pc << " se ha desconectado -" << std::endl;
                 else
-                    std::cout << "*** Un cliente se ha desconectado antes de enviar datos ***" << std::endl;
+                    std::cerr << "*** Un cliente se ha desconectado antes de enviar datos ***" << std::endl;
 
-                std::cout << "======================================================" << std::endl;
+                std::cerr << "======================================================" << std::endl;
                 break;
             }
 
@@ -183,7 +226,7 @@ void Server::handle_client_thread(int client_fd) {
 
 
 
-void guardar_en_bd(const ClientData& c_data) {
+void Server::guardar_en_bd(const ClientData& c_data) {
     try {
         sql::mysql::MySQL_Driver* driver = sql::mysql::get_mysql_driver_instance();
         std::unique_ptr<sql::Connection> conn(
