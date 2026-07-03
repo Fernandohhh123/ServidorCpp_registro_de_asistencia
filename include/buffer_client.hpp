@@ -1,13 +1,8 @@
 #pragma once
 #include <string>
+#include <unordered_map>
 
 struct ClientData {
-    std::string nombre;
-    std::string matricula;
-    std::string carrera;
-    std::string docente;
-    std::string motivo;
-    std::string nombre_pc;
+    std::unordered_map<std::string, std::string> datos_usuario;
     std::string hora;
 };
-
