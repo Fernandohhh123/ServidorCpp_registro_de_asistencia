@@ -14,6 +14,7 @@ namespace config {
         int32_t MaxConnections = 0;
 
         std::string db_host = "";
+        std::string db_port = "";
         std::string db_UserName = "";
         std::string db_Passwd = "";
         std::string db_name = "";

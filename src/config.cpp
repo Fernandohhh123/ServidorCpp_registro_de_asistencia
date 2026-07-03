@@ -29,6 +29,7 @@ namespace config{
         config.MaxConnections = config_buffer["server"]["max_connections"].value_or(config.MaxConnections);
 
         config.db_host = config_buffer["database"]["host"].value_or(config.db_host);
+        config.db_port = config_buffer["database"]["port"].value_or(config.db_port);
         config.db_UserName = config_buffer["database"]["user"].value_or(config.db_UserName);
         config.db_Passwd = config_buffer["database"]["password"].value_or(config.db_Passwd);
         config.db_name = config_buffer["database"]["db_name"].value_or(config.db_name);
@@ -36,6 +37,8 @@ namespace config{
 
         // Campos de la tabla
         if(auto campos_buffer = config_buffer["database"]["table_fields"].as_array()){
+
+            config.TableFields.clear();
 
             for(auto&& campo : *campos_buffer){
 
@@ -76,6 +79,7 @@ namespace config{
         config -> port = 12345;
         config -> MaxConnections = 100;
         config -> db_host = "127.0.0.1";
+        config -> db_port = "3306";
     }
 
 } // namespace
