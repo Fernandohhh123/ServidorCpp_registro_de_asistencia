@@ -10,7 +10,7 @@ max_connections = 0
 
 # IP de la base de datos
 host = ""
-
+port = ""
 user = ""
 password = ""
 db_name = ""
