@@ -154,9 +154,6 @@ void Server::handle_client_thread(int client_fd) {
             if (!received_data.empty() && received_data.back() == '\n') received_data.pop_back();
             if (!received_data.empty() && received_data.back() == '\r') received_data.pop_back();
 
-            // Asignamos la hora de llegada
-            c_data.hora = obtener_hora_actual();
-
             // ==========================================
             // EL CAMBIO FUERTE: PARSEO DINÁMICO
             // ==========================================
@@ -185,8 +182,7 @@ void Server::handle_client_thread(int client_fd) {
                     break;
                 }
 
-                // Imprimimos la auditoría de consola de forma dinámica
-                std::cout << "[HORA]: " << c_data.hora << std::endl;
+                // Imprimimos la auditoría de consola de forma dinámica (Solo campos del TOML)
                 for (const auto& [columna, valor] : c_data.datos_usuario) {
                     std::cout << columna << ": " << valor << std::endl;
                 }
