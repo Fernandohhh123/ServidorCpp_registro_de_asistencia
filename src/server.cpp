@@ -277,7 +277,7 @@ void Server::guardar_en_bd(const ClientData& c_data) {
     try {
         sql::mysql::MySQL_Driver* driver = sql::mysql::get_mysql_driver_instance();
         
-        //  Ahora el puerto se concatena dinámicamente desde el TOML
+        // Ahora el puerto se concatena dinámicamente desde el TOML
         std::string connection_string = "tcp://" + config.db_host + ":" + config.db_port;
         
         std::unique_ptr<sql::Connection> conn(
@@ -286,14 +286,26 @@ void Server::guardar_en_bd(const ClientData& c_data) {
         conn->setSchema(config.db_name);
 
         // ==========================================
-        //  CONSTRUCCIÓN DINÁMICA DEL QUERY SQL
+        //  CONSTRUCCIÓN DINÁMICA PURA DEL QUERY SQL
         // ==========================================
-        std::string columnas = "hora";
-        std::string valores = "'" + c_data.hora + "'"; 
+        std::string columnas = "";
+        std::string valores = ""; 
+        bool primero = true;
 
         for (const auto& [columna, valor] : c_data.datos_usuario) {
-            columnas += ", " + columna;
-            valores += ", '" + valor + "'"; 
+            if (!primero) {
+                columnas += ", ";
+                valores += ", ";
+            }
+            columnas += columna;
+            valores += "'" + valor + "'"; // Envolvemos el valor en comillas simples para SQL
+            primero = false;
+        }
+
+        // Si por alguna razón el mapa está vacío, evitamos lanzar un query roto
+        if (columnas.empty()) {
+            std::cerr << "[ DB ERROR ] No hay campos configurados para insertar." << std::endl;
+            return;
         }
 
         std::string query_final = "INSERT INTO " + config.db_TableName + " (" + columnas + ") VALUES (" + valores + ")";
