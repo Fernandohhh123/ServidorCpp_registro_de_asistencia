@@ -35,7 +35,7 @@ echo "Instalndo archivo de servicio..."
 if [ ! -f "$SERVICEF" ]; then
 	echo "[ x ] No existe el archivo de servicio"
 else
-	cp "$SERVICEF" "SERVICEF_PATH"
+	cp "$SERVICEF" "$SERVICEF_PATH"
 	echo "Archivo de servicio instalado"
 fi
 
