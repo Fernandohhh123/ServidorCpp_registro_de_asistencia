@@ -4,6 +4,8 @@ DIR="$(dirname "$0")"
 BIN="$DIR/bin/cerrusv"
 CFG_FILE="cerrucfg.toml"
 PATH_CFG_FILE="/etc/cerrucfg.toml"
+SERVICEF_PATH="/etc/systemd/system/"
+SERVICEF="cerrusv.service"
 
 echo "### Instalando... ###"
 
@@ -27,5 +29,14 @@ else
 fi
 
 echo "Binario instalado en /usr/local/bin/cerrusv"
+
+echo "Instalndo archivo de servicio..."
+
+if [ ! -f "$SERVICEF" ]; then
+	echo "[ x ] No existe el archivo de servicio"
+else
+	cp "$SERVICEF" "SERVICEF_PATH"
+	echo "Archivo de servicio instalado"
+fi
 
 echo "Listo!"
